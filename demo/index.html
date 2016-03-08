@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.2/nv.d3.css">
+<style>
+.chart {
+	width: 800px;
+	height: 400px;
+	background-color: #eeeeee;
+}
+</style>
+</head>
+<body ng-controller="democontroller">
+
+<envee-multi-bar class="chart" data="data" dispatch="dispatch" options="options"></envee-multi-bar>
+
+</body>
+<script src="http://d3js.org/d3.v3.js"></script>
+<script src="http://nvd3.org/assets/js/data/stream_layers.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.2/nv.d3.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+<script src="../envee.js"></script>
+<script>
+
+var app = angular.module("app", ["envee"]);
+
+var exampleData = function() {
+	return stream_layers(3,10+Math.random()*100,.1).map(function(data, i) {
+		return {
+			key: 'Stream #' + i,
+			values: data
+		};
+	});
+};
+
+app.controller("democontroller", function($scope, $timeout) {
+	
+	$scope.data = exampleData();
+	$timeout(function() {
+		$scope.data = exampleData();
+	}, 3000);
+
+	$scope.options = {
+		showControls: true
+	};
+
+	$scope.$watch("dispatch", function() {
+		if ($scope.dispatch) {
+			$scope.dispatch.on("click", function(e) {
+				console.log(e);
+			});
+		}
+	}, true);
+
+});
+
+</script>
+</html>
